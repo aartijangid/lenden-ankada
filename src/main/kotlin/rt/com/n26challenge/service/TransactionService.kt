@@ -26,10 +26,18 @@ data class TimelyTransactionStatistics(
         var count: Int = 0
 )
 
-open class Transaction(var amount: Double, var timestamp: Long)
+open class Transaction(var amount: Double, var timestamp: Long) {
+    override fun equals(other: Any?): Boolean =
+            if (other is Transaction) {
+                amount == other.amount &&
+                        timestamp == other.timestamp
+            } else {
+                false
+            }
+}
 
 @JsonFormat
-public data class TransactionRequest (
+public data class TransactionRequest(
         val amount: Double,
         val timestamp: Long
 )
