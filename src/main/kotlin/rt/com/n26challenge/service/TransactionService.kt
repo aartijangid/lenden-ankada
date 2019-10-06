@@ -34,10 +34,16 @@ open class Transaction(var amount: Double, var timestamp: Long) {
             } else {
                 false
             }
+
+    override fun hashCode(): Int {
+        var result = amount.hashCode()
+        result = 31 * result + timestamp.hashCode()
+        return result
+    }
 }
 
 @JsonFormat
-public data class TransactionRequest(
+data class TransactionRequest(
         val amount: Double,
         val timestamp: Long
 )

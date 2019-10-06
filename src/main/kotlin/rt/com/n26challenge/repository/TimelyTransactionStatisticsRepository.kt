@@ -1,6 +1,5 @@
 package rt.com.n26challenge.repository
 
-import org.springframework.core.convert.TypeDescriptor.array
 import org.springframework.stereotype.Repository
 import rt.com.n26challenge.service.TimelyTransactionStatistics
 
