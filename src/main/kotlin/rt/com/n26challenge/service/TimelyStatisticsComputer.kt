@@ -10,7 +10,7 @@ class TimelyStatisticsComputer(@Autowired val statisticsRepository: TimelyTransa
     fun compute(transaction: Transaction): TimelyTransactionStatistics {
 
         val timestampIndex = computeIndex(timestamp = transaction.timestamp)
-        val previousTransactionStatistics = statisticsRepository.search(timestampIndex)!!
+        val previousTransactionStatistics = statisticsRepository.search(timestampIndex)
         return TimelyTransactionStatistics(
                 timestampIndex = timestampIndex,
                 sum = transaction.amount + previousTransactionStatistics.sum,
@@ -21,4 +21,5 @@ class TimelyStatisticsComputer(@Autowired val statisticsRepository: TimelyTransa
     }
 
     fun computeIndex(timestamp: Long): Int = (timestamp % 60).toInt()
+
 }

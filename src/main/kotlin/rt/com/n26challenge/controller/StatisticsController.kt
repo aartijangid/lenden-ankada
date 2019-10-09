@@ -16,9 +16,9 @@ class StatisticsController(@Autowired val statisticsService: StatisticsService) 
 }
 
 data class StatisticsResponse(
-        val sum: Int = 0,
-        val avg: Int = 0,
-        val max: Int = 0,
-        val min: Int = 0,
-        val count: Int = 0
+        var sum: Double = 0.0,
+        var avg: Double = 0.0,
+        var max: Double = 0.0,
+        var min: Double = 0.0,
+        var count: Int = 0
 )
