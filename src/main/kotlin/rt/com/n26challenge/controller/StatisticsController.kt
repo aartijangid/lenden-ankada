@@ -1,6 +1,7 @@
 package rt.com.n26challenge.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import rt.com.n26challenge.service.StatisticsService
@@ -22,3 +23,8 @@ data class StatisticsResponse(
         var min: Double = 0.0,
         var count: Int = 0
 )
+
+enum class RequestStatus(val requestStatus: HttpStatus) {
+    ACCEPTED(HttpStatus.CREATED),
+    REJECTED(HttpStatus.NO_CONTENT)
+}

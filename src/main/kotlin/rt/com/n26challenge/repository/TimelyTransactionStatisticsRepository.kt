@@ -1,11 +1,15 @@
 package rt.com.n26challenge.repository
 
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Repository
 import rt.com.n26challenge.service.TimelyTransactionStatistics
+import java.time.Instant
 import java.util.*
 
+
 @Repository
-class TimelyTransactionStatisticsRepository {
+class TimelyTransactionStatisticsRepository(private val interval: Long = 60) {
+
     companion object {
         lateinit var timelyStatistics: Array<TimelyTransactionStatistics>
     }
@@ -15,11 +19,15 @@ class TimelyTransactionStatisticsRepository {
     }
 
     fun add(index: Int, timelyTransactionStatistics: TimelyTransactionStatistics) {
-        timelyStatistics[index] = timelyTransactionStatistics
+        synchronized(this) {
+            timelyStatistics[index] = timelyTransactionStatistics
+        }
     }
 
     fun delete(index: Int) {
-        timelyStatistics[index] = TimelyTransactionStatistics()
+        synchronized(this) {
+            timelyStatistics[index] = TimelyTransactionStatistics()
+        }
     }
 
     fun search(index: Int): TimelyTransactionStatistics = timelyStatistics[index]
@@ -28,9 +36,35 @@ class TimelyTransactionStatisticsRepository {
 
     fun count(): Int = timelyStatistics.toList().sumBy { it.count }
 
-    fun min(): Double = Collections.min((timelyStatistics.filter { it.count > 0 }).map { it.min })
+    fun min(): Double {
+        val records = (timelyStatistics.filter { it.count > 0 }).map { it.min }
+        return if (records.isEmpty())
+            0.0
+        else
+            Collections.min(records)
+    }
 
-    fun max(): Double = Collections.max((timelyStatistics.filter { it.count > 0 }).map { it.max })
+    fun max(): Double {
+        val records = (timelyStatistics.filter { it.count > 0 }).map { it.max }
+        return if (records.isEmpty())
+            0.0
+        else
+            Collections.max(records)
+    }
 
-    fun avg(): Double = sum().div(count())
+    fun avg(): Double {
+        return if (count() > 0)
+            sum().div(count())
+        else
+            return 0.0
+    }
+
+    @Scheduled(fixedRate = 1000, initialDelay = 60000)
+    fun reinitializeRepositoryIndex() {
+        val indexToDiscard = ((Instant.now().epochSecond - 59) % 60).toInt()
+
+        if (timelyStatistics[indexToDiscard].count > 0) {
+            timelyStatistics[indexToDiscard] = TimelyTransactionStatistics()
+        }
+    }
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import rt.com.n26challenge.service.TimelyTransactionStatistics
 import java.time.Instant
 
+
 class TimelyTransactionStatisticsRepositoryTest {
 
     private lateinit var timelyTransactionStatisticsRepository: TimelyTransactionStatisticsRepository
@@ -16,7 +17,7 @@ class TimelyTransactionStatisticsRepositoryTest {
     }
 
     @Test
-    fun `add - should insert the computed timely transaction statistics in the computed index`(){
+    fun `add - should insert the computed timely transaction statistics in the computed index`() {
         // give
         val timelyTransactionStatistics = TimelyTransactionStatistics(sum = 123.0)
         // when
@@ -61,7 +62,7 @@ class TimelyTransactionStatisticsRepositoryTest {
     }
 
     @Test
-    fun `search - when null transaction should return default timely transaction statistics`(){
+    fun `search - when null transaction should return default timely transaction statistics`() {
         // given
         val timelyTransactionStatistics = TimelyTransactionStatistics()
         // then
@@ -69,7 +70,7 @@ class TimelyTransactionStatisticsRepositoryTest {
     }
 
     @Test
-    fun `on start up size of timely transaction statistics repository should be 60`(){
+    fun `on start up size of timely transaction statistics repository should be 60`() {
         assertEquals(60, TimelyTransactionStatisticsRepository.timelyStatistics.size)
     }
 
@@ -212,4 +213,11 @@ class TimelyTransactionStatisticsRepositoryTest {
 
         assertEquals(5.75, timelyTransactionStatisticsRepository.avg())
     }
+
+    /*@Test
+    fun `re-init - after 60 * 1000 milli seconds the repository should be re-initialized`() {
+        Thread.sleep(6);
+        verify(timelyTransactionStatisticsRepository).reinitializeRepository()
+    }*/
+
 }

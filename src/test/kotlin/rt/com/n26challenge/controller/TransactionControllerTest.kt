@@ -26,13 +26,13 @@ class TransactionControllerTest {
     @MockBean
     private lateinit var transactionService: TransactionService
 
-    private val now = Instant.now()
+    private val now = Instant.now().toEpochMilli()
 
     @Test
     fun `given transaction is happening now should return 201`() {
         val transactionRequest = TransactionRequest(
                 amount = 5.0,
-                timestamp = now.epochSecond
+                timestamp = now
         )
 
         val transaction = Transaction(
@@ -56,7 +56,7 @@ class TransactionControllerTest {
     fun `given transaction is 60 seconds older should return 201`() {
         val transactionRequest = TransactionRequest(
                 amount = 5.0,
-                timestamp = now.epochSecond - 59
+                timestamp = now - 59000
         )
 
         val transaction = Transaction(
@@ -81,7 +81,7 @@ class TransactionControllerTest {
         // given
         val transactionRequest = TransactionRequest(
                 amount = 5.0,
-                timestamp = now.epochSecond - 61
+                timestamp = now - 60001
         )
 
         // then
@@ -100,7 +100,7 @@ class TransactionControllerTest {
         // given
         val transaction = TransactionRequest(
                 amount = 5.0,
-                timestamp = now.epochSecond + 1
+                timestamp = now + 1100
         )
 
         // then

@@ -1,8 +1,6 @@
 package rt.com.n26challenge.controller
 
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,20 +9,23 @@ import org.springframework.web.bind.annotation.RestController
 import rt.com.n26challenge.service.Transaction
 import rt.com.n26challenge.service.TransactionRequest
 import rt.com.n26challenge.service.TransactionService
-import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 @RestController
-class TransactionController (@Autowired val transactionService: TransactionService){
+class TransactionController(val transactionService: TransactionService) {
 
-    @PostMapping("/transactions", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("/transactions", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addTransaction(@RequestBody transactionRequest: TransactionRequest): ResponseEntity<Any> {
-        return if (Instant.now().epochSecond.minus(transactionRequest.timestamp) in 0..59) {
+        val utcTimeZone = ZonedDateTime.now(ZoneOffset.UTC)
+        val currentTimestamp = utcTimeZone.toEpochSecond()
+        val timestampInSeconds = transactionRequest.timestamp / 1000
+
+        return if (currentTimestamp.minus(timestampInSeconds) in 0..59) {
             val transaction = Transaction(timestamp = transactionRequest.timestamp, amount = transactionRequest.amount)
             transactionService.addTransaction(transaction)
-            ResponseEntity(HttpStatus.CREATED)
-        }
-        else
-            ResponseEntity(HttpStatus.NO_CONTENT)
+            ResponseEntity(RequestStatus.ACCEPTED.requestStatus)
+        } else
+            ResponseEntity(RequestStatus.REJECTED.requestStatus)
     }
 }
-

@@ -10,11 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension
 import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
 import java.time.Instant
 
+
 @ExtendWith(MockitoExtension::class)
 internal class TimelyStatisticsComputerTest {
 
     private lateinit var timelyStatisticsComputer: TimelyStatisticsComputer
-    private var currentTimestamp = Instant.EPOCH.plusSeconds(60).epochSecond
+
+    private var currentTimestamp = Instant.EPOCH.plusSeconds(60).toEpochMilli()
+
 
     @Mock
     lateinit var statisticsRepository: TimelyTransactionStatisticsRepository
@@ -34,7 +37,7 @@ internal class TimelyStatisticsComputerTest {
     @Test
     fun `computeIndex - given timestamp for one second later should return index one`() {
         // given
-        var currentTimestamp = currentTimestamp.plus(1)
+        val currentTimestamp = currentTimestamp.plus(1)
 
         // then
         assertEquals(1, timelyStatisticsComputer.computeIndex(timestamp = currentTimestamp))
@@ -43,7 +46,7 @@ internal class TimelyStatisticsComputerTest {
     @Test
     fun `computeIndex - given 59th second should return index 59`() {
         // given
-        var currentTimestamp = currentTimestamp.plus(59)
+        val currentTimestamp = currentTimestamp.plus(59)
 
         // then
         assertEquals(59, timelyStatisticsComputer.computeIndex(timestamp = currentTimestamp))
@@ -64,7 +67,7 @@ internal class TimelyStatisticsComputerTest {
         )
         given(statisticsRepository.search(0)).willReturn(existingTransaction)
         // when
-        var actualTimelyTransactionStatistics = timelyStatisticsComputer.compute(transaction = transaction)
+        val actualTimelyTransactionStatistics = timelyStatisticsComputer.compute(transaction = transaction)
 
         // then
         assertEquals(expectedTimelyTransactionStatistics, actualTimelyTransactionStatistics)
@@ -92,7 +95,7 @@ internal class TimelyStatisticsComputerTest {
         given(statisticsRepository.search(0)).willReturn(existingTransaction)
 
         // when
-        var actualTimelyTransactionStatistics = timelyStatisticsComputer.compute(transaction = transaction)
+        val actualTimelyTransactionStatistics = timelyStatisticsComputer.compute(transaction = transaction)
 
         // then
         assertEquals(expectedTimelyTransactionStatistics, actualTimelyTransactionStatistics)
