@@ -3,12 +3,15 @@ package rt.com.n26challenge.repository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Repository
 import rt.com.n26challenge.service.TimelyTransactionStatistics
+import java.text.DecimalFormat
 import java.time.Instant
 import java.util.*
 
 
 @Repository
 class TimelyTransactionStatisticsRepository(private val interval: Long = 60) {
+
+    val decimalFormat = DecimalFormat("#.##")
 
     companion object {
         lateinit var timelyStatistics: Array<TimelyTransactionStatistics>
@@ -32,7 +35,7 @@ class TimelyTransactionStatisticsRepository(private val interval: Long = 60) {
 
     fun search(index: Int): TimelyTransactionStatistics = timelyStatistics[index]
 
-    fun sum(): Double = timelyStatistics.toList().sumByDouble { it.sum }
+    fun sum(): Double = decimalFormat.format(timelyStatistics.toList().sumByDouble { it.sum }).toDouble()
 
     fun count(): Int = timelyStatistics.toList().sumBy { it.count }
 
@@ -53,8 +56,9 @@ class TimelyTransactionStatisticsRepository(private val interval: Long = 60) {
     }
 
     fun avg(): Double {
+
         return if (count() > 0)
-            sum().div(count())
+            decimalFormat.format(sum().div(count())).toDouble()
         else
             return 0.0
     }
