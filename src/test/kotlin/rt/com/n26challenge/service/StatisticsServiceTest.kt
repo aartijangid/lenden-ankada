@@ -8,7 +8,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import rt.com.n26challenge.controller.StatisticsResponse
-import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
+import rt.com.n26challenge.repository.TransactionRepository
 import java.time.Instant
 
 @ExtendWith(MockitoExtension::class)
@@ -20,11 +20,11 @@ internal class StatisticsServiceTest {
     private lateinit var transaction2: TimelyTransactionStatistics
 
     @Mock
-    lateinit var statisticsRepository: TimelyTransactionStatisticsRepository
+    lateinit var repository: TransactionRepository
 
     @BeforeEach
     fun setUp() {
-        statisticsService = StatisticsService(statisticRepository = statisticsRepository)
+        statisticsService = StatisticsService(statisticRepository = repository)
         transaction1 = TimelyTransactionStatistics(
                 timestamp = Instant.now().epochSecond,
                 timestampIndex = 0,
@@ -54,11 +54,11 @@ internal class StatisticsServiceTest {
                 avg = 5.0
         )
 
-        given(statisticsRepository.sum()).willReturn(10.0)
-        given(statisticsRepository.count()).willReturn(2)
-        given(statisticsRepository.max()).willReturn(7.0)
-        given(statisticsRepository.min()).willReturn(3.0)
-        given(statisticsRepository.avg()).willReturn(5.0)
+        given(repository.sum()).willReturn(10.0)
+        given(repository.count()).willReturn(2)
+        given(repository.max()).willReturn(7.0)
+        given(repository.min()).willReturn(3.0)
+        given(repository.avg()).willReturn(5.0)
 
         // then
         assertEquals(expectedStatisticsResponse, statisticsService.getStatistics())

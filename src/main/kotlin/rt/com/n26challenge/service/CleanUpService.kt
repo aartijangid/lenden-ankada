@@ -1,7 +1,7 @@
 package rt.com.n26challenge.service
 
 import org.springframework.scheduling.annotation.Scheduled
-import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
+import rt.com.n26challenge.repository.TransactionRepository
 import java.time.Instant
 
 class CleanUpService {
@@ -10,8 +10,8 @@ class CleanUpService {
     fun reinitializeRepositoryIndex() {
         val indexToDiscard = ((Instant.now().epochSecond) % 60).toInt()
 
-        if (TimelyTransactionStatisticsRepository.timelyStatistics[indexToDiscard].count > 0) {
-            TimelyTransactionStatisticsRepository.timelyStatistics[indexToDiscard] = TimelyTransactionStatistics()
+        if (TransactionRepository.timelyStatistics[indexToDiscard].count > 0) {
+            TransactionRepository.timelyStatistics[indexToDiscard] = TimelyTransactionStatistics()
         }
     }
 }

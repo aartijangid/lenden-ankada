@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import rt.com.n26challenge.exception.TransactionException
-import rt.com.n26challenge.service.Transaction
+import rt.com.n26challenge.model.Transaction
 import rt.com.n26challenge.service.TransactionService
 import java.time.Instant
 

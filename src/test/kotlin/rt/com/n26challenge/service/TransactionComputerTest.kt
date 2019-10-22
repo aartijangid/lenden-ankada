@@ -7,31 +7,31 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
+import rt.com.n26challenge.model.Transaction
+import rt.com.n26challenge.repository.TransactionRepository
 import java.time.Instant
 
 
 @ExtendWith(MockitoExtension::class)
-internal class TimelyStatisticsComputerTest {
+internal class TransactionComputerTest {
 
-    private lateinit var timelyStatisticsComputer: TimelyStatisticsComputer
+    private lateinit var transactionComputer: TransactionComputer
 
     private var currentTimestamp = Instant.EPOCH.plusSeconds(60).toEpochMilli()
 
-
     @Mock
-    lateinit var statisticsRepository: TimelyTransactionStatisticsRepository
+    lateinit var repository: TransactionRepository
 
     @BeforeEach
     fun setUp() {
-        timelyStatisticsComputer = TimelyStatisticsComputer(statisticsRepository = statisticsRepository)
+        transactionComputer = TransactionComputer(repository = repository)
 
     }
 
     @Test
     fun `computeIndex - given current timestamp should return index zero`() {
         // then
-        assertEquals(0, timelyStatisticsComputer.computeIndex(timestamp = currentTimestamp))
+        assertEquals(0, transactionComputer.computeIndex(timestamp = currentTimestamp))
     }
 
     @Test
@@ -40,7 +40,7 @@ internal class TimelyStatisticsComputerTest {
         val currentTimestamp = currentTimestamp.plus(1)
 
         // then
-        assertEquals(1, timelyStatisticsComputer.computeIndex(timestamp = currentTimestamp))
+        assertEquals(1, transactionComputer.computeIndex(timestamp = currentTimestamp))
     }
 
     @Test
@@ -49,7 +49,7 @@ internal class TimelyStatisticsComputerTest {
         val currentTimestamp = currentTimestamp.plus(59)
 
         // then
-        assertEquals(59, timelyStatisticsComputer.computeIndex(timestamp = currentTimestamp))
+        assertEquals(59, transactionComputer.computeIndex(timestamp = currentTimestamp))
     }
 
     @Test
@@ -65,9 +65,9 @@ internal class TimelyStatisticsComputerTest {
                 max = 5.0,
                 min = 5.0
         )
-        given(statisticsRepository.search(0)).willReturn(existingTransaction)
+        given(repository.search(0)).willReturn(existingTransaction)
         // when
-        val actualTimelyTransactionStatistics = timelyStatisticsComputer.compute(transaction = transaction)
+        val actualTimelyTransactionStatistics = transactionComputer.compute(transaction = transaction)
 
         // then
         assertEquals(expectedTimelyTransactionStatistics, actualTimelyTransactionStatistics)
@@ -93,27 +93,12 @@ internal class TimelyStatisticsComputerTest {
                 max = 5.0,
                 min = 5.0
         )
-        given(statisticsRepository.search(0)).willReturn(existingTransaction)
+        given(repository.search(0)).willReturn(existingTransaction)
 
         // when
-        val actualTimelyTransactionStatistics = timelyStatisticsComputer.compute(transaction = transaction)
+        val actualTimelyTransactionStatistics = transactionComputer.compute(transaction = transaction)
 
         // then
         assertEquals(expectedTimelyTransactionStatistics, actualTimelyTransactionStatistics)
-    }
-
-    @Test
-    fun `validate - given current timestamp in seconds should return true`() {
-        assertEquals(true, timelyStatisticsComputer.validate(Instant.now().toEpochMilli()))
-    }
-
-    @Test
-    fun `validate - given future timestamp in seconds should return false`() {
-        assertEquals(false, timelyStatisticsComputer.validate(Instant.now().toEpochMilli() + 10000))
-    }
-
-    @Test
-    fun `validate - given timestamp 60 seconds older should return false`() {
-        assertEquals(false, timelyStatisticsComputer.validate(Instant.now().toEpochMilli() - 60000))
     }
 }

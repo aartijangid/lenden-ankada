@@ -2,17 +2,16 @@ package rt.com.n26challenge.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import rt.com.n26challenge.model.Transaction
+import rt.com.n26challenge.repository.TransactionRepository
 
 @Service
-class TimelyStatisticsComputer(@Autowired val statisticsRepository: TimelyTransactionStatisticsRepository) {
+class TransactionComputer(@Autowired val repository: TransactionRepository) {
 
     fun compute(transaction: Transaction): TimelyTransactionStatistics {
 
         val timestampIndex = computeIndex(timestamp = transaction.timestamp)
-        var previousTransactionStatistics = statisticsRepository.search(timestampIndex)
+        val previousTransactionStatistics = repository.search(timestampIndex)
 
         if (previousTransactionStatistics.count == 0)
             return TimelyTransactionStatistics(timestampIndex = timestampIndex,
@@ -39,12 +38,4 @@ class TimelyStatisticsComputer(@Autowired val statisticsRepository: TimelyTransa
 
     fun computeIndex(timestamp: Long): Int = (timestamp % 60).toInt()
 
-    fun validate(timestamp: Long): Boolean {
-        println("in validate $timestamp")
-        val utcTimeZone = ZonedDateTime.now(ZoneOffset.UTC)
-        val currentTimestamp = utcTimeZone.toEpochSecond()
-        val timestampInSeconds = timestamp / 1000
-        println(currentTimestamp.minus(timestampInSeconds) in 0..59)
-        return currentTimestamp.minus(timestampInSeconds) in 0..59
-    }
 }

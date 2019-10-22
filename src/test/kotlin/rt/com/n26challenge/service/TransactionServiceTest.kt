@@ -9,7 +9,7 @@ import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import rt.com.n26challenge.factories.TransactionFactory
 import rt.com.n26challenge.factories.TransactionType
-import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
+import rt.com.n26challenge.repository.TransactionRepository
 
 @ExtendWith(MockitoExtension::class)
 class TransactionServiceTest {
@@ -17,16 +17,16 @@ class TransactionServiceTest {
     private lateinit var transactionService: TransactionService
 
     @Mock
-    lateinit var statisticsRepository: TimelyTransactionStatisticsRepository
+    lateinit var repository: TransactionRepository
 
     @Mock
-    lateinit var timelyStatisticsComputer: TimelyStatisticsComputer
+    lateinit var transactionComputer: TransactionComputer
 
     @BeforeEach
     fun setUp() {
         transactionService = TransactionService(
-                statisticRepository = statisticsRepository,
-                timelyStatisticsComputer = timelyStatisticsComputer)
+                statisticRepository = repository,
+                transactionComputer = transactionComputer)
     }
 
     @Test
@@ -34,17 +34,16 @@ class TransactionServiceTest {
         // given
         val transaction = TransactionFactory.create(TransactionType.CURRENT)
         val timelyTransactionStatistics = TimelyTransactionStatistics()
-        given(timelyStatisticsComputer.validate(transaction.timestamp)).willReturn(true)
-        given(timelyStatisticsComputer.compute(transaction)).willReturn(timelyTransactionStatistics)
-        given(timelyStatisticsComputer.computeIndex(transaction.timestamp)).willReturn(2)
+        given(transactionComputer.compute(transaction)).willReturn(timelyTransactionStatistics)
+        given(transactionComputer.computeIndex(transaction.timestamp)).willReturn(2)
 
         // when
         transactionService.addTransaction(transaction)
 
         // then
-        val inOrder = Mockito.inOrder(timelyStatisticsComputer, statisticsRepository)
-        inOrder.verify(timelyStatisticsComputer).compute(transaction)
-        inOrder.verify(timelyStatisticsComputer).computeIndex(transaction.timestamp)
-        inOrder.verify(statisticsRepository).add(2, timelyTransactionStatistics)
+        val inOrder = Mockito.inOrder(transactionComputer, repository)
+        inOrder.verify(transactionComputer).compute(transaction)
+        inOrder.verify(transactionComputer).computeIndex(transaction.timestamp)
+        inOrder.verify(repository).add(2, timelyTransactionStatistics)
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import rt.com.n26challenge.exception.TransactionException
-import rt.com.n26challenge.service.Transaction
+import rt.com.n26challenge.model.Transaction
 import rt.com.n26challenge.service.TransactionService
 import javax.validation.Valid
 

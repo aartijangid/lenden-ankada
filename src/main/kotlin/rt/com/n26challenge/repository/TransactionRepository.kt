@@ -9,10 +9,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
 @Repository
-class TimelyTransactionStatisticsRepository() {
+class TransactionRepository() {
 
-    var decimalFormat = DecimalFormat("#.##")
-    lateinit var lock: ReadWriteLock
+    val decimalFormat = DecimalFormat("#.##")
+    final val lock: ReadWriteLock
 
     companion object {
         lateinit var timelyStatistics: Array<TimelyTransactionStatistics>

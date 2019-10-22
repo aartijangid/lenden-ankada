@@ -2,10 +2,10 @@ package rt.com.n26challenge.service
 
 import org.springframework.stereotype.Service
 import rt.com.n26challenge.controller.StatisticsResponse
-import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
+import rt.com.n26challenge.repository.TransactionRepository
 
 @Service
-class StatisticsService(val statisticRepository: TimelyTransactionStatisticsRepository) {
+class StatisticsService(val statisticRepository: TransactionRepository) {
     fun getStatistics(): StatisticsResponse {
         val statisticsResponse = StatisticsResponse(
                 statisticRepository.sum(),

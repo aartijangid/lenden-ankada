@@ -7,13 +7,13 @@ import rt.com.n26challenge.service.TimelyTransactionStatistics
 import java.time.Instant
 
 
-class TimelyTransactionStatisticsRepositoryTest {
+class TransactionRepositoryTest {
 
-    private lateinit var timelyTransactionStatisticsRepository: TimelyTransactionStatisticsRepository
+    private lateinit var transactionRepository: TransactionRepository
 
     @BeforeEach
     fun setUp() {
-        timelyTransactionStatisticsRepository = TimelyTransactionStatisticsRepository()
+        transactionRepository = TransactionRepository()
     }
 
     @Test
@@ -21,20 +21,20 @@ class TimelyTransactionStatisticsRepositoryTest {
         // give
         val timelyTransactionStatistics = TimelyTransactionStatistics(sum = 123.0)
         // when
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics)
+        transactionRepository.add(1, timelyTransactionStatistics)
         // then
-        assertEquals(timelyTransactionStatistics, timelyTransactionStatisticsRepository.search(1))
+        assertEquals(timelyTransactionStatistics, transactionRepository.search(1))
     }
 
     @Test
     fun `delete - should delete the computed timely transaction statistics and decrement the size`() {
         // give
         val timelyTransactionStatistics = TimelyTransactionStatistics(sum = 123.0)
-        timelyTransactionStatisticsRepository.add(5, timelyTransactionStatistics)
+        transactionRepository.add(5, timelyTransactionStatistics)
         // when
-        timelyTransactionStatisticsRepository.delete(5)
+        transactionRepository.delete(5)
         // then
-        assertEquals(TimelyTransactionStatistics(), timelyTransactionStatisticsRepository.search(5))
+        assertEquals(TimelyTransactionStatistics(), transactionRepository.search(5))
     }
 
     @Test
@@ -45,20 +45,20 @@ class TimelyTransactionStatisticsRepositoryTest {
                 sum = 5.0
         )
         // when
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics)
+        transactionRepository.add(1, timelyTransactionStatistics)
         // then
-        assertEquals(timelyTransactionStatistics, timelyTransactionStatisticsRepository.search(1))
+        assertEquals(timelyTransactionStatistics, transactionRepository.search(1))
     }
 
     @Test
     fun `search - should search by index for non-existing transaction and return default timely transaction statistics`() {
         // given
         val timelyTransactionStatistics = TimelyTransactionStatistics()
-        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics)
+        transactionRepository.add(0, timelyTransactionStatistics)
         // when
-        timelyTransactionStatisticsRepository.delete(0)
+        transactionRepository.delete(0)
         // then
-        assertEquals(TimelyTransactionStatistics(), timelyTransactionStatisticsRepository.search(0))
+        assertEquals(TimelyTransactionStatistics(), transactionRepository.search(0))
     }
 
     @Test
@@ -66,12 +66,12 @@ class TimelyTransactionStatisticsRepositoryTest {
         // given
         val timelyTransactionStatistics = TimelyTransactionStatistics()
         // then
-        assertEquals(timelyTransactionStatistics, timelyTransactionStatisticsRepository.search(0))
+        assertEquals(timelyTransactionStatistics, transactionRepository.search(0))
     }
 
     @Test
     fun `on start up size of timely transaction statistics repository should be 60`() {
-        assertEquals(60, TimelyTransactionStatisticsRepository.timelyStatistics.size)
+        assertEquals(60, TransactionRepository.timelyStatistics.size)
     }
 
     @Test
@@ -96,10 +96,10 @@ class TimelyTransactionStatisticsRepositoryTest {
         )
 
         // when
-        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics1)
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics2)
+        transactionRepository.add(0, timelyTransactionStatistics1)
+        transactionRepository.add(1, timelyTransactionStatistics2)
 
-        assertEquals(23.0, timelyTransactionStatisticsRepository.sum())
+        assertEquals(23.0, transactionRepository.sum())
     }
 
     @Test
@@ -124,10 +124,10 @@ class TimelyTransactionStatisticsRepositoryTest {
         )
 
         // when
-        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics1)
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics2)
+        transactionRepository.add(0, timelyTransactionStatistics1)
+        transactionRepository.add(1, timelyTransactionStatistics2)
 
-        assertEquals(4, timelyTransactionStatisticsRepository.count())
+        assertEquals(4, transactionRepository.count())
     }
 
     @Test
@@ -152,10 +152,10 @@ class TimelyTransactionStatisticsRepositoryTest {
         )
 
         // when
-        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics1)
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics2)
+        transactionRepository.add(0, timelyTransactionStatistics1)
+        transactionRepository.add(1, timelyTransactionStatistics2)
 
-        assertEquals(3.0, timelyTransactionStatisticsRepository.min())
+        assertEquals(3.0, transactionRepository.min())
     }
 
     @Test
@@ -180,10 +180,10 @@ class TimelyTransactionStatisticsRepositoryTest {
         )
 
         // when
-        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics1)
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics2)
+        transactionRepository.add(0, timelyTransactionStatistics1)
+        transactionRepository.add(1, timelyTransactionStatistics2)
 
-        assertEquals(8.0, timelyTransactionStatisticsRepository.max())
+        assertEquals(8.0, transactionRepository.max())
     }
 
     @Test
@@ -208,10 +208,10 @@ class TimelyTransactionStatisticsRepositoryTest {
         )
 
         // when
-        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics1)
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics2)
+        transactionRepository.add(0, timelyTransactionStatistics1)
+        transactionRepository.add(1, timelyTransactionStatistics2)
 
-        assertEquals(5.75, timelyTransactionStatisticsRepository.avg())
+        assertEquals(5.75, transactionRepository.avg())
     }
 
     @Test
@@ -235,10 +235,10 @@ class TimelyTransactionStatisticsRepositoryTest {
         )
 
         // when
-        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics1)
-        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics2)
+        transactionRepository.add(0, timelyTransactionStatistics1)
+        transactionRepository.add(1, timelyTransactionStatistics2)
 
-        assertEquals(2, timelyTransactionStatisticsRepository.getTransactionsList().size)
+        assertEquals(2, transactionRepository.getTransactionsList().size)
     }
 
 }
