@@ -61,7 +61,7 @@ internal class StatisticsServiceTest {
         given(statisticsRepository.avg()).willReturn(5.0)
 
         // then
-        assertEquals(expectedStatisticsResponse, statisticsService.get())
+        assertEquals(expectedStatisticsResponse, statisticsService.getStatistics())
 
     }
 }

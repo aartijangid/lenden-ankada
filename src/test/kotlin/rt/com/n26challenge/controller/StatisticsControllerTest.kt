@@ -7,7 +7,7 @@ import org.mockito.BDDMockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -26,18 +26,18 @@ internal class StatisticsControllerTest {
     fun `GET statistics should return status 200 OK with statistics for last 60 seconds`() {
         // given
         val statisticsResponse = StatisticsResponse()
-        given(statisticsService.get()).willReturn(statisticsResponse)
+        given(statisticsService.getStatistics()).willReturn(statisticsResponse)
 
         // when
         val result = mockMvc.perform(MockMvcRequestBuilders
                 .get("/statistics")
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(APPLICATION_JSON))
 
         // then
         val objectMapper = ObjectMapper()
         result.andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(content().json(objectMapper.writeValueAsString(statisticsResponse)))
 
-        verify(statisticsService).get()
+        verify(statisticsService).getStatistics()
     }
 }

@@ -214,10 +214,31 @@ class TimelyTransactionStatisticsRepositoryTest {
         assertEquals(5.75, timelyTransactionStatisticsRepository.avg())
     }
 
-    /*@Test
-    fun `re-init - after 60 * 1000 milli seconds the repository should be re-initialized`() {
-        Thread.sleep(6);
-        verify(timelyTransactionStatisticsRepository).reinitializeRepository()
-    }*/
+    @Test
+    fun `getTransactionsList - should return filtered list of transactions from timely transaction statistics Repository`() {
+        val timelyTransactionStatistics1 = TimelyTransactionStatistics(
+                timestampIndex = 0,
+                timestamp = Instant.now().epochSecond,
+                min = 3.0,
+                max = 7.0,
+                sum = 10.0,
+                count = 2
+        )
+
+        val timelyTransactionStatistics2 = TimelyTransactionStatistics(
+                timestampIndex = 1,
+                timestamp = Instant.now().epochSecond,
+                min = 5.0,
+                max = 8.0,
+                sum = 13.0,
+                count = 2
+        )
+
+        // when
+        timelyTransactionStatisticsRepository.add(0, timelyTransactionStatistics1)
+        timelyTransactionStatisticsRepository.add(1, timelyTransactionStatistics2)
+
+        assertEquals(2, timelyTransactionStatisticsRepository.getTransactionsList().size)
+    }
 
 }

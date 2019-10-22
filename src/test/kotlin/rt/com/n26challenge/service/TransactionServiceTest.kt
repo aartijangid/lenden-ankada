@@ -33,8 +33,8 @@ class TransactionServiceTest {
     fun `given transaction should add computed statistics to transaction-statistics-repository`() {
         // given
         val transaction = TransactionFactory.create(TransactionType.CURRENT)
-
         val timelyTransactionStatistics = TimelyTransactionStatistics()
+        given(timelyStatisticsComputer.validate(transaction.timestamp)).willReturn(true)
         given(timelyStatisticsComputer.compute(transaction)).willReturn(timelyTransactionStatistics)
         given(timelyStatisticsComputer.computeIndex(transaction.timestamp)).willReturn(2)
 
@@ -42,7 +42,7 @@ class TransactionServiceTest {
         transactionService.addTransaction(transaction)
 
         // then
-        val inOrder = Mockito.inOrder(timelyStatisticsComputer, statisticsRepository);
+        val inOrder = Mockito.inOrder(timelyStatisticsComputer, statisticsRepository)
         inOrder.verify(timelyStatisticsComputer).compute(transaction)
         inOrder.verify(timelyStatisticsComputer).computeIndex(transaction.timestamp)
         inOrder.verify(statisticsRepository).add(2, timelyTransactionStatistics)

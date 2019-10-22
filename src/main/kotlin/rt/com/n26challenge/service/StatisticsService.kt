@@ -6,17 +6,26 @@ import rt.com.n26challenge.repository.TimelyTransactionStatisticsRepository
 
 @Service
 class StatisticsService(val statisticRepository: TimelyTransactionStatisticsRepository) {
-    fun get(): StatisticsResponse {
-        val statisticsResponse = StatisticsResponse()
-
-        statisticsResponse.sum = statisticRepository.sum()
-        statisticsResponse.count = statisticRepository.count()
-        statisticsResponse.avg = statisticRepository.avg()
-        statisticsResponse.min = statisticRepository.min()
-        statisticsResponse.max = statisticRepository.max()
+    fun getStatistics(): StatisticsResponse {
+        val statisticsResponse = StatisticsResponse(
+                statisticRepository.sum(),
+                statisticRepository.avg(),
+                statisticRepository.max(),
+                statisticRepository.min(),
+                statisticRepository.count()
+        )
 
         println(statisticsResponse)
         return statisticsResponse
 
     }
 }
+
+data class TimelyTransactionStatistics(
+        val timestampIndex: Int = 0,
+        val timestamp: Long = 0,
+        val sum: Double = 0.0,
+        val min: Double = 0.0,
+        val max: Double = 0.0,
+        var count: Int = 0
+)

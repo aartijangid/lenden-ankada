@@ -10,18 +10,15 @@ import rt.com.n26challenge.service.StatisticsService
 class StatisticsController(@Autowired val statisticsService: StatisticsService) {
 
     @GetMapping(value = ["/statistics"])
-    fun getStatistics(): StatisticsResponse {
-
-        return statisticsService.get()
-    }
+    fun getStatistics(): StatisticsResponse = statisticsService.getStatistics()
 }
 
 data class StatisticsResponse(
-        var sum: Double = 0.0,
-        var avg: Double = 0.0,
-        var max: Double = 0.0,
-        var min: Double = 0.0,
-        var count: Int = 0
+        val sum: Double = 0.0,
+        val avg: Double = 0.0,
+        val max: Double = 0.0,
+        val min: Double = 0.0,
+        val count: Int = 0
 )
 
 enum class RequestStatus(val requestStatus: HttpStatus) {

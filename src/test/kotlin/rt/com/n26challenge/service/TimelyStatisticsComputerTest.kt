@@ -82,12 +82,13 @@ internal class TimelyStatisticsComputerTest {
                 timestamp = currentTimestamp,
                 sum = 5.0,
                 count = 1,
-                max = 5.0
+                max = 5.0,
+                min = 5.0
                 )
         val expectedTimelyTransactionStatistics = TimelyTransactionStatistics(
                 timestampIndex = 0,
+                timestamp = currentTimestamp,
                 sum = 10.0,
-                timestamp = transaction.timestamp,
                 count = 2,
                 max = 5.0,
                 min = 5.0
@@ -99,5 +100,20 @@ internal class TimelyStatisticsComputerTest {
 
         // then
         assertEquals(expectedTimelyTransactionStatistics, actualTimelyTransactionStatistics)
+    }
+
+    @Test
+    fun `validate - given current timestamp in seconds should return true`() {
+        assertEquals(true, timelyStatisticsComputer.validate(Instant.now().toEpochMilli()))
+    }
+
+    @Test
+    fun `validate - given future timestamp in seconds should return false`() {
+        assertEquals(false, timelyStatisticsComputer.validate(Instant.now().toEpochMilli() + 10000))
+    }
+
+    @Test
+    fun `validate - given timestamp 60 seconds older should return false`() {
+        assertEquals(false, timelyStatisticsComputer.validate(Instant.now().toEpochMilli() - 60000))
     }
 }
