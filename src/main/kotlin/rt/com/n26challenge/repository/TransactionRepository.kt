@@ -1,9 +1,7 @@
 package rt.com.n26challenge.repository
 
 import org.springframework.stereotype.Repository
-import rt.com.n26challenge.service.TimelyTransactionStatistics
-import java.text.DecimalFormat
-import java.util.*
+import rt.com.n26challenge.service.TransactionStatistics
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -11,22 +9,21 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 @Repository
 class TransactionRepository() {
 
-    val decimalFormat = DecimalFormat("#.##")
-    final val lock: ReadWriteLock
+    private final val lock: ReadWriteLock
 
     companion object {
-        lateinit var timelyStatistics: Array<TimelyTransactionStatistics>
+        lateinit var transactionRepository: Array<TransactionStatistics>
     }
 
     init {
-        timelyStatistics = (1..60).map { TimelyTransactionStatistics() }.toTypedArray()
+        transactionRepository = (1..60).map { TransactionStatistics() }.toTypedArray()
         this.lock = ReentrantReadWriteLock()
     }
 
-    fun add(index: Int, timelyTransactionStatistics: TimelyTransactionStatistics) {
+    fun add(index: Int, transactionStatistics: TransactionStatistics) {
         try {
             lock.readLock().lock()
-            timelyStatistics[index] = timelyTransactionStatistics
+            transactionRepository[index] = transactionStatistics
         } finally {
             lock.readLock().unlock()
         }
@@ -35,40 +32,15 @@ class TransactionRepository() {
     fun delete(index: Int) {
         try {
             lock.writeLock().lock()
-            timelyStatistics[index] = TimelyTransactionStatistics()
+            transactionRepository[index] = TransactionStatistics()
         } finally {
             lock.writeLock().unlock()
         }
     }
 
-    fun search(index: Int): TimelyTransactionStatistics = timelyStatistics[index]
+    fun search(index: Int): TransactionStatistics = transactionRepository[index]
 
-    fun sum(): Double = decimalFormat.format(timelyStatistics.toList().sumByDouble { it.sum }).toDouble()
-
-    fun count(): Int = timelyStatistics.toList().sumBy { it.count }
-
-    fun min(): Double {
-        val records = (timelyStatistics.filter { it.count > 0 }).map { it.min }
-        return if (records.isEmpty())
-            0.0
-        else
-            Collections.min(records)
-    }
-
-    fun max(): Double {
-        val records = (timelyStatistics.filter { it.count > 0 }).map { it.max }
-        return if (records.isEmpty())
-            0.0
-        else
-            Collections.max(records)
-    }
-
-    fun avg(): Double = if (count() > 0)
-        decimalFormat.format(sum().div(count())).toDouble()
-    else
-        0.0
-
-    fun getTransactionsList(): List<TimelyTransactionStatistics> {
-        return timelyStatistics.filter { it.count > 0 }
+    fun getTransactionsList(): List<TransactionStatistics> {
+        return transactionRepository.filter { it.count > 0 }
     }
 }

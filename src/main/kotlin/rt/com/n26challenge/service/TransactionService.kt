@@ -15,8 +15,8 @@ class TransactionService(
 
     fun addTransaction(transaction: Transaction) {
         if (transaction.isValid()) {
-            val timelyTransactionStatistics = transactionComputer.compute(transaction)
-            statisticRepository.add(transactionComputer.computeIndex(transaction.timestamp), timelyTransactionStatistics)
+            val transactionStatistics = transactionComputer.compute(transaction)
+            statisticRepository.add(transactionComputer.computeIndex(transaction.timestamp), transactionStatistics)
         } else
             throw TransactionException("OutdatedTransaction")
     }

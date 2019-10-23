@@ -56,8 +56,8 @@ internal class TransactionComputerTest {
     fun `compute - given transaction should return computed timely transaction statistics`() {
         // given
         val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
-        val existingTransaction = TimelyTransactionStatistics()
-        val expectedTimelyTransactionStatistics = TimelyTransactionStatistics(
+        val existingTransaction = TransactionStatistics()
+        val expectedTransactionStatistics = TransactionStatistics(
                 timestampIndex = 0,
                 sum = 5.0,
                 timestamp = transaction.timestamp,
@@ -67,17 +67,17 @@ internal class TransactionComputerTest {
         )
         given(repository.search(0)).willReturn(existingTransaction)
         // when
-        val actualTimelyTransactionStatistics = transactionComputer.compute(transaction = transaction)
+        val actualTransactionStatistics = transactionComputer.compute(transaction = transaction)
 
         // then
-        assertEquals(expectedTimelyTransactionStatistics, actualTimelyTransactionStatistics)
+        assertEquals(expectedTransactionStatistics, actualTransactionStatistics)
     }
 
     @Test
     fun `compute - given transaction repository already having one transaction should return computed timely transaction statistics`() {
         // given
         val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
-        val existingTransaction = TimelyTransactionStatistics(
+        val existingTransaction = TransactionStatistics(
                 timestampIndex = 0,
                 timestamp = currentTimestamp,
                 sum = 5.0,
@@ -85,7 +85,7 @@ internal class TransactionComputerTest {
                 max = 5.0,
                 min = 5.0
                 )
-        val expectedTimelyTransactionStatistics = TimelyTransactionStatistics(
+        val expectedTransactionStatistics = TransactionStatistics(
                 timestampIndex = 0,
                 timestamp = currentTimestamp,
                 sum = 10.0,
@@ -96,9 +96,9 @@ internal class TransactionComputerTest {
         given(repository.search(0)).willReturn(existingTransaction)
 
         // when
-        val actualTimelyTransactionStatistics = transactionComputer.compute(transaction = transaction)
+        val actualTransactionStatistics = transactionComputer.compute(transaction = transaction)
 
         // then
-        assertEquals(expectedTimelyTransactionStatistics, actualTimelyTransactionStatistics)
+        assertEquals(expectedTransactionStatistics, actualTransactionStatistics)
     }
 }

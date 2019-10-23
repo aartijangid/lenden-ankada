@@ -8,20 +8,20 @@ import rt.com.n26challenge.repository.TransactionRepository
 @Service
 class TransactionComputer(@Autowired val repository: TransactionRepository) {
 
-    fun compute(transaction: Transaction): TimelyTransactionStatistics {
+    fun compute(transaction: Transaction): TransactionStatistics {
 
         val timestampIndex = computeIndex(timestamp = transaction.timestamp)
         val previousTransactionStatistics = repository.search(timestampIndex)
 
         if (previousTransactionStatistics.count == 0)
-            return TimelyTransactionStatistics(timestampIndex = timestampIndex,
+            return TransactionStatistics(timestampIndex = timestampIndex,
                     timestamp = transaction.timestamp,
                     sum = transaction.amount,
                     count = 1,
                     max = transaction.amount,
                     min = transaction.amount)
         else
-            return TimelyTransactionStatistics(
+            return TransactionStatistics(
                     timestampIndex = timestampIndex,
                     sum = transaction.amount + previousTransactionStatistics.sum,
                     timestamp = transaction.timestamp,

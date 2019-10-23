@@ -10,8 +10,8 @@ class CleanUpService {
     fun reinitializeRepositoryIndex() {
         val indexToDiscard = ((Instant.now().epochSecond) % 60).toInt()
 
-        if (TransactionRepository.timelyStatistics[indexToDiscard].count > 0) {
-            TransactionRepository.timelyStatistics[indexToDiscard] = TimelyTransactionStatistics()
+        if (TransactionRepository.transactionRepository[indexToDiscard].count > 0) {
+            TransactionRepository.transactionRepository[indexToDiscard] = TransactionStatistics()
         }
     }
 }

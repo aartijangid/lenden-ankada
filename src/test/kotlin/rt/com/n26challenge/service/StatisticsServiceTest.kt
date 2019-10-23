@@ -16,30 +16,31 @@ internal class StatisticsServiceTest {
 
     private lateinit var statisticsService: StatisticsService
 
-    private lateinit var transaction1: TimelyTransactionStatistics
-    private lateinit var transaction2: TimelyTransactionStatistics
+    private lateinit var transactionStatistics1: TransactionStatistics
+    private lateinit var transactionStatistics2: TransactionStatistics
 
     @Mock
-    lateinit var repository: TransactionRepository
+    lateinit var transactionRepository: TransactionRepository
 
     @BeforeEach
     fun setUp() {
-        statisticsService = StatisticsService(statisticRepository = repository)
-        transaction1 = TimelyTransactionStatistics(
-                timestamp = Instant.now().epochSecond,
+        statisticsService = StatisticsService(transactionRepository = transactionRepository)
+        transactionStatistics1 = TransactionStatistics(
                 timestampIndex = 0,
-                sum = 7.0,
-                min = 7.0,
-                max = 7.0,
-                count = 1
-        )
-        transaction2 = TimelyTransactionStatistics(
-                timestamp = Instant.now().epochSecond.plus(1),
-                timestampIndex = 1,
-                sum = 3.0,
+                timestamp = Instant.now().epochSecond,
                 min = 3.0,
-                max = 3.0,
-                count = 1
+                max = 7.0,
+                sum = 10.0,
+                count = 2
+        )
+
+        transactionStatistics2 = TransactionStatistics(
+                timestampIndex = 1,
+                timestamp = Instant.now().epochSecond,
+                min = 5.0,
+                max = 8.0,
+                sum = 13.0,
+                count = 2
         )
     }
 
@@ -47,18 +48,14 @@ internal class StatisticsServiceTest {
     fun `get should return computed statistics for last 60 seconds`() {
         //given
         val expectedStatisticsResponse = StatisticsResponse(
-                sum = 10.0,
-                count = 2,
-                max = 7.0,
+                sum = 23.0,
+                count = 4,
+                max = 8.0,
                 min = 3.0,
-                avg = 5.0
+                avg = 5.75
         )
 
-        given(repository.sum()).willReturn(10.0)
-        given(repository.count()).willReturn(2)
-        given(repository.max()).willReturn(7.0)
-        given(repository.min()).willReturn(3.0)
-        given(repository.avg()).willReturn(5.0)
+        given(transactionRepository.getTransactionsList()).willReturn(listOf(transactionStatistics1, transactionStatistics2))
 
         // then
         assertEquals(expectedStatisticsResponse, statisticsService.getStatistics())
