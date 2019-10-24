@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 @Repository
 class TransactionRepository() {
 
-    private final val lock: ReadWriteLock
+    final val lock: ReadWriteLock
 
     companion object {
         lateinit var transactionRepository: Array<TransactionStatistics>
@@ -41,6 +41,11 @@ class TransactionRepository() {
     fun search(index: Int): TransactionStatistics = transactionRepository[index]
 
     fun getTransactionsList(): List<TransactionStatistics> {
-        return transactionRepository.filter { it.count > 0 }
+        try {
+            lock.readLock().lock()
+            return transactionRepository.filter { it.count > 0 }
+        } finally {
+            lock.readLock().unlock()
+        }
     }
 }
