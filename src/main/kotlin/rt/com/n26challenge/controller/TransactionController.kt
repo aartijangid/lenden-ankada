@@ -1,7 +1,6 @@
 package rt.com.n26challenge.controller
 
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NO_CONTENT
@@ -31,11 +30,11 @@ class TransactionController(val transactionService: TransactionService) {
     }
 }
 
-@JsonFormat
+//@JsonFormat
 data class TransactionRequest(
-        @JsonProperty(required = true, value = "Please provide an amount")
+        @JsonProperty(required = true)
         val amount: Double,
 
-        @JsonProperty(required = true, value = "Please provide a timestamp")
+        @JsonProperty(required = true)
         val timestamp: Long
 )

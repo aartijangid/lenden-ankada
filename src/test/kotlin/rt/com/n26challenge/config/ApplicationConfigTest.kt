@@ -22,6 +22,6 @@ class ApplicationConfigTest {
 
         assertThatThrownBy { objectMapper.readValue<TransactionRequest>(json) }
                 .isInstanceOf(MismatchedInputException::class.java)
-                .hasMessageContaining("Please provide an amount")
+                .hasMessageContaining("Missing required creator property 'amount'")
     }
 }
