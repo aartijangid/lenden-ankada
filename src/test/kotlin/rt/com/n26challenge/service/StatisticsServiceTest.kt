@@ -26,21 +26,21 @@ internal class StatisticsServiceTest {
     fun setUp() {
         statisticsService = StatisticsService(transactionRepository = transactionRepository)
         transactionStatistics1 = TransactionStatistics(
-                timestampIndex = 0,
-                timestamp = Instant.now().epochSecond,
-                min = 3.0,
-                max = 7.0,
-                sum = 10.0,
-                count = 2
+            timestampIndex = 0,
+            timestamp = Instant.now().epochSecond,
+            min = 3.0,
+            max = 7.0,
+            sum = 10.0,
+            count = 2
         )
 
         transactionStatistics2 = TransactionStatistics(
-                timestampIndex = 1,
-                timestamp = Instant.now().epochSecond,
-                min = 5.0,
-                max = 8.0,
-                sum = 13.0,
-                count = 2
+            timestampIndex = 1,
+            timestamp = Instant.now().epochSecond,
+            min = 5.0,
+            max = 8.0,
+            sum = 13.0,
+            count = 2
         )
     }
 
@@ -48,14 +48,19 @@ internal class StatisticsServiceTest {
     fun `get should return computed statistics for last 60 seconds`() {
         //given
         val expectedStatisticsResponse = StatisticsResponse(
-                sum = 23.0,
-                count = 4,
-                max = 8.0,
-                min = 3.0,
-                avg = 5.75
+            sum = 23.0,
+            count = 4,
+            max = 8.0,
+            min = 3.0,
+            avg = 5.75
         )
 
-        given(transactionRepository.getTransactionsList()).willReturn(listOf(transactionStatistics1, transactionStatistics2))
+        given(transactionRepository.getTransactions()).willReturn(
+            listOf(
+                transactionStatistics1,
+                transactionStatistics2
+            )
+        )
 
         // then
         assertEquals(expectedStatisticsResponse, statisticsService.getStatistics())

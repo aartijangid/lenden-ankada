@@ -18,23 +18,23 @@ import javax.validation.Valid
 class TransactionController(val transactionService: TransactionService) {
 
     @PostMapping("/transactions", consumes = [APPLICATION_JSON_VALUE])
-    fun addTransaction(@Valid @RequestBody transactionRequest: TransactionRequest): ResponseEntity<Any> {
-        return try {
-            transactionService.addTransaction(
-                    Transaction(timestamp = transactionRequest.timestamp,
-                            amount = transactionRequest.amount))
-            ResponseEntity(CREATED)
-        } catch (transactionException: TransactionException) {
-            ResponseEntity(NO_CONTENT)
-        }
+    fun addTransaction(@Valid @RequestBody transactionRequest: TransactionRequest): ResponseEntity<Any> = try {
+        transactionService.addTransaction(
+            Transaction(
+                timestamp = transactionRequest.timestamp,
+                amount = transactionRequest.amount
+            )
+        )
+        ResponseEntity(CREATED)
+    } catch (transactionException: TransactionException) {
+        ResponseEntity(NO_CONTENT)
     }
 }
 
-//@JsonFormat
 data class TransactionRequest(
-        @JsonProperty(required = true)
-        val amount: Double,
+    @JsonProperty(required = true)
+    val amount: Double,
 
-        @JsonProperty(required = true)
-        val timestamp: Long
+    @JsonProperty(required = true)
+    val timestamp: Long
 )
