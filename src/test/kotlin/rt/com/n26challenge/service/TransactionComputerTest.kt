@@ -1,5 +1,6 @@
 package rt.com.n26challenge.service
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -44,7 +45,7 @@ internal class TransactionComputerTest {
     }
 
     @Test
-    fun `computeIndex - given 59th second should return index 59`() {
+    fun `computeIndex - given 59th second should return index 59`() { // TODO please use paramterized tests for 0,1,59
         // given
         val currentTimestamp = currentTimestamp.plus(59)
 
@@ -58,40 +59,41 @@ internal class TransactionComputerTest {
         val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
         val existingTransaction = TransactionStatistics()
         val expectedTransactionStatistics = TransactionStatistics(
-                timestampIndex = 0,
-                sum = 5.0,
-                timestamp = transaction.timestamp,
-                count = 1,
-                max = 5.0,
-                min = 5.0
+            timestampIndex = 0,
+            sum = 5.0,
+            timestamp = transaction.timestamp,
+            count = 1,
+            max = 5.0,
+            min = 5.0
         )
         given(repository.search(0)).willReturn(existingTransaction)
         // when
         val actualTransactionStatistics = transactionComputer.compute(transaction = transaction)
 
         // then
-        assertEquals(expectedTransactionStatistics, actualTransactionStatistics)
+        assertThat(actualTransactionStatistics).isEqualTo(expectedTransactionStatistics) // More natural
     }
 
     @Test
     fun `compute - given transaction repository already having one transaction should return computed timely transaction statistics`() {
+        // redundant ??? What value does this test give that the above doesn't?
         // given
         val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
         val existingTransaction = TransactionStatistics(
-                timestampIndex = 0,
-                timestamp = currentTimestamp,
-                sum = 5.0,
-                count = 1,
-                max = 5.0,
-                min = 5.0
-                )
+            timestampIndex = 0,
+            timestamp = currentTimestamp,
+            sum = 5.0,
+            count = 1,
+            max = 5.0,
+            min = 5.0
+        )
         val expectedTransactionStatistics = TransactionStatistics(
-                timestampIndex = 0,
-                timestamp = currentTimestamp,
-                sum = 10.0,
-                count = 2,
-                max = 5.0,
-                min = 5.0
+            timestampIndex = 0,
+            timestamp = currentTimestamp,
+            sum = 10.0,
+            count = 2,
+            max = 5.0,
+            min = 5.0
         )
         given(repository.search(0)).willReturn(existingTransaction)
 

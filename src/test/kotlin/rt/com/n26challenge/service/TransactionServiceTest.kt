@@ -7,8 +7,8 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import rt.com.n26challenge.factories.TransactionFactory
 import rt.com.n26challenge.factories.TransactionType
+import rt.com.n26challenge.factories.create
 import rt.com.n26challenge.repository.TransactionRepository
 
 @ExtendWith(MockitoExtension::class)
@@ -25,14 +25,15 @@ class TransactionServiceTest {
     @BeforeEach
     fun setUp() {
         transactionService = TransactionService(
-                statisticRepository = repository,
-                transactionComputer = transactionComputer)
+            statisticRepository = repository,
+            transactionComputer = transactionComputer
+        )
     }
 
     @Test
     fun `given transaction should add computed statistics to transaction-statistics-repository`() {
         // given
-        val transaction = TransactionFactory.create(TransactionType.CURRENT)
+        val transaction = TransactionType.CURRENT.create()
         val transactionStatistics = TransactionStatistics()
         given(transactionComputer.compute(transaction)).willReturn(transactionStatistics)
         given(transactionComputer.computeIndex(transaction.timestamp)).willReturn(2)

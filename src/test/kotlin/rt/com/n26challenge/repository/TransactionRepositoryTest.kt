@@ -1,5 +1,6 @@
 package rt.com.n26challenge.repository
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -41,8 +42,8 @@ class TransactionRepositoryTest {
     fun `search - should search by index for the inserted transaction statistics`() {
         // give
         val transactionStatistics = TransactionStatistics(
-                timestamp = 1234567890,
-                sum = 5.0
+            timestamp = 1234567890,
+            sum = 5.0
         )
         // when
         transactionRepository.add(1, transactionStatistics)
@@ -71,34 +72,34 @@ class TransactionRepositoryTest {
 
     @Test
     fun `on start up size of timely transaction statistics repository should be 60`() {
-        assertEquals(60, TransactionRepository.transactionRepository.size)
+        assertThat(transactionRepository.transactionRepository.size).isEqualTo(60)
     }
 
     @Test
     fun `getTransactionsList - should return filtered list of transactions from timely transaction statistics Repository`() {
         val transactionStatistics1 = TransactionStatistics(
-                timestampIndex = 0,
-                timestamp = Instant.now().epochSecond,
-                min = 3.0,
-                max = 7.0,
-                sum = 10.0,
-                count = 2
+            timestampIndex = 0,
+            timestamp = Instant.now().epochSecond,
+            min = 3.0,
+            max = 7.0,
+            sum = 10.0,
+            count = 2
         )
 
         val transactionStatistics2 = TransactionStatistics(
-                timestampIndex = 1,
-                timestamp = Instant.now().epochSecond,
-                min = 5.0,
-                max = 8.0,
-                sum = 13.0,
-                count = 2
+            timestampIndex = 1,
+            timestamp = Instant.now().epochSecond,
+            min = 5.0,
+            max = 8.0,
+            sum = 13.0,
+            count = 2
         )
 
         // when
         transactionRepository.add(0, transactionStatistics1)
         transactionRepository.add(1, transactionStatistics2)
 
-        assertEquals(2, transactionRepository.getTransactionsList().size)
+        assertEquals(2, transactionRepository.getTransactions().size)
     }
 
 }
