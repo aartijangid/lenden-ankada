@@ -1,6 +1,6 @@
 package rt.com.n26challenge.service
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,7 +31,7 @@ internal class TransactionComputerTest {
     @Test
     fun `computeIndex - given current timestamp should return index zero`() {
         // then
-        assertEquals(0, transactionComputer.computeIndex(timestamp = currentTimestamp))
+        assertThat(transactionComputer.computeIndex(timestamp = currentTimestamp)).isEqualTo(0)
     }
 
     @Test
@@ -40,7 +40,7 @@ internal class TransactionComputerTest {
         val currentTimestamp = currentTimestamp.plus(1)
 
         // then
-        assertEquals(1, transactionComputer.computeIndex(timestamp = currentTimestamp))
+        assertThat(transactionComputer.computeIndex(timestamp = currentTimestamp)).isEqualTo(1)
     }
 
     @Test
@@ -49,7 +49,7 @@ internal class TransactionComputerTest {
         val currentTimestamp = currentTimestamp.plus(59)
 
         // then
-        assertEquals(59, transactionComputer.computeIndex(timestamp = currentTimestamp))
+        assertThat(transactionComputer.computeIndex(timestamp = currentTimestamp)).isEqualTo(59)
     }
 
     @Test
@@ -58,19 +58,18 @@ internal class TransactionComputerTest {
         val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
         val existingTransaction = TransactionStatistics()
         val expectedTransactionStatistics = TransactionStatistics(
-                timestampIndex = 0,
-                sum = 5.0,
-                timestamp = transaction.timestamp,
-                count = 1,
-                max = 5.0,
-                min = 5.0
+            sum = 5.0,
+            timestamp = transaction.timestamp,
+            count = 1,
+            max = 5.0,
+            min = 5.0
         )
         given(repository.search(0)).willReturn(existingTransaction)
         // when
         val actualTransactionStatistics = transactionComputer.compute(transaction = transaction)
 
         // then
-        assertEquals(expectedTransactionStatistics, actualTransactionStatistics)
+        assertThat(expectedTransactionStatistics).isEqualTo(actualTransactionStatistics)
     }
 
     @Test
@@ -78,20 +77,18 @@ internal class TransactionComputerTest {
         // given
         val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
         val existingTransaction = TransactionStatistics(
-                timestampIndex = 0,
-                timestamp = currentTimestamp,
-                sum = 5.0,
-                count = 1,
-                max = 5.0,
-                min = 5.0
-                )
+            timestamp = currentTimestamp,
+            sum = 5.0,
+            count = 1,
+            max = 5.0,
+            min = 5.0
+        )
         val expectedTransactionStatistics = TransactionStatistics(
-                timestampIndex = 0,
-                timestamp = currentTimestamp,
-                sum = 10.0,
-                count = 2,
-                max = 5.0,
-                min = 5.0
+            timestamp = currentTimestamp,
+            sum = 10.0,
+            count = 2,
+            max = 5.0,
+            min = 5.0
         )
         given(repository.search(0)).willReturn(existingTransaction)
 
@@ -99,6 +96,48 @@ internal class TransactionComputerTest {
         val actualTransactionStatistics = transactionComputer.compute(transaction = transaction)
 
         // then
-        assertEquals(expectedTransactionStatistics, actualTransactionStatistics)
+        assertThat(expectedTransactionStatistics).isEqualTo(actualTransactionStatistics)
+    }
+
+    @Test
+    fun `getStatistics - given transaction should return transaction statistics`() {
+        val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
+        val expectedTransactionStatistics = TransactionStatistics(
+            timestamp = currentTimestamp,
+            sum = 5.0,
+            count = 1,
+            max = 5.0,
+            min = 5.0
+        )
+
+        assertThat(transactionComputer.getStatistics(transaction)).isEqualTo(expectedTransactionStatistics)
+    }
+
+    @Test
+    fun `mergeTransactionStatistics - given transaction and previous transactions should return merged transaction statistics`() {
+        // given
+        val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
+        val previousTransaction = TransactionStatistics(
+            timestamp = currentTimestamp,
+            sum = 5.0,
+            count = 1,
+            max = 5.0,
+            min = 5.0
+        )
+        val expectedTransactionStatistics = TransactionStatistics(
+            timestamp = currentTimestamp,
+            sum = 10.0,
+            count = 2,
+            max = 5.0,
+            min = 5.0
+        )
+        // when
+        val actualTransactionStatistics = transactionComputer.mergeTransactionStatistics(
+            transaction = transaction,
+            previousTransactionStatistics = previousTransaction
+        )
+
+        // then
+        assertThat(expectedTransactionStatistics).isEqualTo(actualTransactionStatistics)
     }
 }

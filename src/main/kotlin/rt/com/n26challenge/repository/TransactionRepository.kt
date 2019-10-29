@@ -2,50 +2,44 @@ package rt.com.n26challenge.repository
 
 import org.springframework.stereotype.Repository
 import rt.com.n26challenge.service.TransactionStatistics
-import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
 @Repository
 class TransactionRepository() {
 
-    final val lock: ReadWriteLock
+    val lock = ReentrantReadWriteLock()
 
-    companion object {
-        lateinit var transactionRepository: Array<TransactionStatistics>
+    val dataStore = (1..60).map { TransactionStatistics() }.toTypedArray()
+
+    fun add(index: Int, transactionStatistics: TransactionStatistics) = try {
+        lock.writeLock().lock()
+        dataStore[index] = transactionStatistics
+    } finally {
+        lock.writeLock().unlock()
     }
 
-    init {
-        transactionRepository = (1..60).map { TransactionStatistics() }.toTypedArray()
-        this.lock = ReentrantReadWriteLock()
+
+    fun delete(index: Int) = try {
+        lock.writeLock().lock()
+        dataStore[index] = TransactionStatistics()
+    } finally {
+        lock.writeLock().unlock()
     }
 
-    fun add(index: Int, transactionStatistics: TransactionStatistics) {
-        try {
-            lock.readLock().lock()
-            transactionRepository[index] = transactionStatistics
-        } finally {
-            lock.readLock().unlock()
-        }
+
+    fun search(index: Int): TransactionStatistics = try {
+        lock.readLock().lock()
+        dataStore[index]
+    } finally {
+        lock.readLock().unlock()
     }
 
-    fun delete(index: Int) {
-        try {
-            lock.writeLock().lock()
-            transactionRepository[index] = TransactionStatistics()
-        } finally {
-            lock.writeLock().unlock()
-        }
+    fun getTransactions(): List<TransactionStatistics> = try {
+        lock.readLock().lock()
+        dataStore.filter { it.count > 0 }
+    } finally {
+        lock.readLock().unlock()
     }
 
-    fun search(index: Int): TransactionStatistics = transactionRepository[index]
-
-    fun getTransactionsList(): List<TransactionStatistics> {
-        try {
-            lock.readLock().lock()
-            return transactionRepository.filter { it.count > 0 }
-        } finally {
-            lock.readLock().unlock()
-        }
-    }
 }
