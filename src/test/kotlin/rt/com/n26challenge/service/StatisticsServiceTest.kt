@@ -9,7 +9,6 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import rt.com.n26challenge.controller.StatisticsResponse
 import rt.com.n26challenge.repository.TransactionRepository
-import java.time.Instant
 
 @ExtendWith(MockitoExtension::class)
 internal class StatisticsServiceTest {
@@ -26,7 +25,6 @@ internal class StatisticsServiceTest {
     fun setUp() {
         statisticsService = StatisticsService(transactionRepository = transactionRepository)
         transactionStatistics1 = TransactionStatistics(
-            timestamp = Instant.now().epochSecond,
             min = 3.0,
             max = 7.0,
             sum = 10.0,
@@ -34,7 +32,6 @@ internal class StatisticsServiceTest {
         )
 
         transactionStatistics2 = TransactionStatistics(
-            timestamp = Instant.now().epochSecond,
             min = 5.0,
             max = 8.0,
             sum = 13.0,

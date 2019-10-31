@@ -1,11 +1,15 @@
 package rt.com.n26challenge.service
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import rt.com.n26challenge.model.Transaction
 import rt.com.n26challenge.repository.TransactionRepository
 
 @Service
-class TransactionComputer(private val repository: TransactionRepository) {
+class TransactionComputer(
+    private val repository: TransactionRepository,
+    @Value("\${service.transaction.retain-period-in-second}") private val retainPeriodInSeconds: Int
+) {
 
     fun compute(transaction: Transaction): TransactionStatistics {
 
@@ -18,25 +22,17 @@ class TransactionComputer(private val repository: TransactionRepository) {
             mergeTransactionStatistics(transaction, previousTransactionStatistics)
     }
 
-    fun computeIndex(timestamp: Long): Int = (timestamp % 60).toInt()
+    fun computeIndex(timestamp: Long): Int = (timestamp % retainPeriodInSeconds).toInt()
 
-    fun mergeTransactionStatistics(transaction: Transaction, previousTransactionStatistics: TransactionStatistics) =
+    private fun mergeTransactionStatistics(transaction: Transaction, previousStats: TransactionStatistics) =
         TransactionStatistics(
-            sum = transaction.amount + previousTransactionStatistics.sum,
-            timestamp = transaction.timestamp,
-            count = ++previousTransactionStatistics.count,
-            max = if (previousTransactionStatistics.max > transaction.amount)
-                previousTransactionStatistics.max
-            else
-                transaction.amount,
-            min = if (previousTransactionStatistics.min < transaction.amount)
-                previousTransactionStatistics.min
-            else
-                transaction.amount
+            sum = transaction.amount + previousStats.sum,
+            count = ++previousStats.count,
+            max = if (previousStats.max > transaction.amount) previousStats.max else transaction.amount,
+            min = if (previousStats.min < transaction.amount) previousStats.min else transaction.amount
         )
 
-    fun getStatistics(transaction: Transaction) = TransactionStatistics(
-        timestamp = transaction.timestamp,
+    private fun getStatistics(transaction: Transaction) = TransactionStatistics(
         sum = transaction.amount,
         count = 1,
         max = transaction.amount,

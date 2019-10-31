@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import rt.com.n26challenge.service.TransactionStatistics
-import java.time.Instant
 
 
 class TransactionRepositoryTest {
@@ -41,7 +40,6 @@ class TransactionRepositoryTest {
     fun `search - should search by index for the inserted transaction statistics`() {
         // give
         val transactionStatistics = TransactionStatistics(
-            timestamp = 1234567890,
             sum = 5.0
         )
         // when
@@ -77,7 +75,6 @@ class TransactionRepositoryTest {
     @Test
     fun `getTransactionsList - should return filtered list of transactions from timely transaction statistics Repository`() {
         val transactionStatistics1 = TransactionStatistics(
-            timestamp = Instant.now().epochSecond,
             min = 3.0,
             max = 7.0,
             sum = 10.0,
@@ -85,7 +82,6 @@ class TransactionRepositoryTest {
         )
 
         val transactionStatistics2 = TransactionStatistics(
-            timestamp = Instant.now().epochSecond,
             min = 5.0,
             max = 8.0,
             sum = 13.0,

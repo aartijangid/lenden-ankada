@@ -22,9 +22,8 @@ internal class CleanUpServiceTest {
 
     @BeforeEach
     fun setUp() {
-        cleanUpService = CleanUpService(transactionRepository = repository)
+        cleanUpService = CleanUpService(transactionRepository = repository, retainPeriodInSeconds = 60)
         transactionStatistics = TransactionStatistics(
-            timestamp = Instant.now().epochSecond,
             min = 3.0,
             max = 7.0,
             sum = 10.0,
@@ -47,5 +46,4 @@ internal class CleanUpServiceTest {
         inOrder.verify(repository).search(currentIndex)
         inOrder.verify(repository).delete(currentIndex)
     }
-
 }

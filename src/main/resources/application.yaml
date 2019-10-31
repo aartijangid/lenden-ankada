@@ -1,0 +1,3 @@
+service:
+  transaction:
+    retain-period-in-second: 60
