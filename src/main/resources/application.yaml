@@ -1,0 +1,3 @@
+service:
+  transaction:
+    period-in-second: 60

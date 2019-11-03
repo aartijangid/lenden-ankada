@@ -1,11 +1,15 @@
 package rt.com.n26challenge.service
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import rt.com.n26challenge.model.Transaction
 import rt.com.n26challenge.repository.TransactionRepository
 
 @Service
-class TransactionComputer(private val repository: TransactionRepository) {
+class TransactionComputer(
+    private val repository: TransactionRepository,
+    @Value("\${service.transaction.period-in-second}") private val periodInSeconds: Int
+) {
 
     fun compute(transaction: Transaction): TransactionStatistics {
 
@@ -18,9 +22,12 @@ class TransactionComputer(private val repository: TransactionRepository) {
             mergeTransactionStatistics(transaction, previousTransactionStatistics)
     }
 
-    fun computeIndex(timestamp: Long): Int = (timestamp % 60).toInt()
+    fun computeIndex(timestamp: Long): Int = (timestamp % periodInSeconds).toInt()
 
-    fun mergeTransactionStatistics(transaction: Transaction, previousTransactionStatistics: TransactionStatistics) =
+    private fun mergeTransactionStatistics(
+        transaction: Transaction,
+        previousTransactionStatistics: TransactionStatistics
+    ) =
         TransactionStatistics(
             sum = transaction.amount + previousTransactionStatistics.sum,
             timestamp = transaction.timestamp,
@@ -35,7 +42,7 @@ class TransactionComputer(private val repository: TransactionRepository) {
                 transaction.amount
         )
 
-    fun getStatistics(transaction: Transaction) = TransactionStatistics(
+    private fun getStatistics(transaction: Transaction) = TransactionStatistics(
         timestamp = transaction.timestamp,
         sum = transaction.amount,
         count = 1,

@@ -24,7 +24,7 @@ internal class TransactionComputerTest {
 
     @BeforeEach
     fun setUp() {
-        transactionComputer = TransactionComputer(repository = repository)
+        transactionComputer = TransactionComputer(repository = repository, periodInSeconds = 60)
 
     }
 
@@ -94,48 +94,6 @@ internal class TransactionComputerTest {
 
         // when
         val actualTransactionStatistics = transactionComputer.compute(transaction = transaction)
-
-        // then
-        assertThat(expectedTransactionStatistics).isEqualTo(actualTransactionStatistics)
-    }
-
-    @Test
-    fun `getStatistics - given transaction should return transaction statistics`() {
-        val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
-        val expectedTransactionStatistics = TransactionStatistics(
-            timestamp = currentTimestamp,
-            sum = 5.0,
-            count = 1,
-            max = 5.0,
-            min = 5.0
-        )
-
-        assertThat(transactionComputer.getStatistics(transaction)).isEqualTo(expectedTransactionStatistics)
-    }
-
-    @Test
-    fun `mergeTransactionStatistics - given transaction and previous transactions should return merged transaction statistics`() {
-        // given
-        val transaction = Transaction(amount = 5.0, timestamp = currentTimestamp)
-        val previousTransaction = TransactionStatistics(
-            timestamp = currentTimestamp,
-            sum = 5.0,
-            count = 1,
-            max = 5.0,
-            min = 5.0
-        )
-        val expectedTransactionStatistics = TransactionStatistics(
-            timestamp = currentTimestamp,
-            sum = 10.0,
-            count = 2,
-            max = 5.0,
-            min = 5.0
-        )
-        // when
-        val actualTransactionStatistics = transactionComputer.mergeTransactionStatistics(
-            transaction = transaction,
-            previousTransactionStatistics = previousTransaction
-        )
 
         // then
         assertThat(expectedTransactionStatistics).isEqualTo(actualTransactionStatistics)
