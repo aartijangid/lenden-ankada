@@ -18,15 +18,13 @@ class StatisticsService(val transactionRepository: TransactionRepository) {
         val max = Collections.max(transactions.map { it.max })
         val min = Collections.min(transactions.map { it.min })
 
-        return StatisticsResponse(sum, avg, max, min, count)
+        return StatisticsResponse(
+            sum = sum,
+            avg = avg,
+            max = max,
+            min = min,
+            count = count
+        )
 
     }
 }
-
-data class TransactionStatistics(
-    val timestamp: Long = 0,
-    val sum: Double = 0.0,
-    val min: Double = 0.0,
-    val max: Double = 0.0,
-    var count: Int = 0
-)

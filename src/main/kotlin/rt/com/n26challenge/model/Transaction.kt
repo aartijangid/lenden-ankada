@@ -6,7 +6,6 @@ import java.time.ZonedDateTime
 data class Transaction(val amount: Double, val timestamp: Long) {
 
     fun isValid(): Boolean {
-        println("in validate $timestamp")
         val utcTimeZone = ZonedDateTime.now(UTC)
         val currentTimestamp = utcTimeZone.toEpochSecond()
         val timestampInSeconds = timestamp / 1000

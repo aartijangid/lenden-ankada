@@ -8,6 +8,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.inOrder
 import org.mockito.junit.jupiter.MockitoExtension
+import rt.com.n26challenge.model.TransactionStatistics
 import rt.com.n26challenge.repository.TransactionRepository
 import java.time.Clock
 import java.time.Instant
@@ -22,7 +23,7 @@ internal class CleanUpServiceTest {
 
     @BeforeEach
     fun setUp() {
-        cleanUpService = CleanUpService(transactionRepository = repository)
+        cleanUpService = CleanUpService(transactionRepository = repository, periodInSeconds = 60)
         transactionStatistics = TransactionStatistics(
             timestamp = Instant.now().epochSecond,
             min = 3.0,

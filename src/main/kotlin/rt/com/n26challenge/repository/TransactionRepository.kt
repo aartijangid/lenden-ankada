@@ -1,7 +1,7 @@
 package rt.com.n26challenge.repository
 
 import org.springframework.stereotype.Repository
-import rt.com.n26challenge.service.TransactionStatistics
+import rt.com.n26challenge.model.TransactionStatistics
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 

@@ -12,12 +12,13 @@ class TransactionService(
     private val transactionComputer: TransactionComputer
 ) {
 
-    fun addTransaction(transaction: Transaction) {
-        if (transaction.isValid()) {
-            val transactionStatistics = transactionComputer.compute(transaction)
-            statisticRepository.add(transactionComputer.computeIndex(transaction.timestamp), transactionStatistics)
-        } else
-            throw TransactionException("OutdatedTransaction")
-    }
+    fun addTransaction(transaction: Transaction) = if (transaction.isValid()) {
+        val transactionStatistics = transactionComputer.compute(transaction)
+        statisticRepository.add(
+            index = transactionComputer.computeIndex(transaction.timestamp),
+            transactionStatistics = transactionStatistics
+        )
+    } else
+        throw TransactionException("OutdatedTransaction")
 }
 

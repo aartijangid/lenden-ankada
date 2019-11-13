@@ -3,7 +3,7 @@ package rt.com.n26challenge.repository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import rt.com.n26challenge.service.TransactionStatistics
+import rt.com.n26challenge.model.TransactionStatistics
 import java.time.Instant
 
 

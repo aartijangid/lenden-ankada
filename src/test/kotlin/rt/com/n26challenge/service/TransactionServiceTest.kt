@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import rt.com.n26challenge.exception.TransactionException
 import rt.com.n26challenge.fixtures.TransactionType
 import rt.com.n26challenge.fixtures.create
+import rt.com.n26challenge.model.TransactionStatistics
 import rt.com.n26challenge.repository.TransactionRepository
 
 @ExtendWith(MockitoExtension::class)

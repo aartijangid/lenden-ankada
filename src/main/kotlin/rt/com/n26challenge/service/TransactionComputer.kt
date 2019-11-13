@@ -3,6 +3,7 @@ package rt.com.n26challenge.service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import rt.com.n26challenge.model.Transaction
+import rt.com.n26challenge.model.TransactionStatistics
 import rt.com.n26challenge.repository.TransactionRepository
 
 @Service

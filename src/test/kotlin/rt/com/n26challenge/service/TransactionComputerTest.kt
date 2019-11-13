@@ -8,6 +8,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import rt.com.n26challenge.model.Transaction
+import rt.com.n26challenge.model.TransactionStatistics
 import rt.com.n26challenge.repository.TransactionRepository
 import java.time.Instant
 
